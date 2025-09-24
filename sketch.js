@@ -29,6 +29,22 @@ function drawSudokuGrid(x, y, cellSize) {
   }
 }
 
+function drawNumbersButton(x, y, buttonWidth, buttonHeight, spacing) {
+  let i = 0;
+  while (i < 9) {
+    let btnX = x;
+    let btnY = y + i * (buttonHeight + spacing);
+    rect(btnX, btnY, buttonWidth, buttonHeight, 5);
+
+    fill(255);
+    textAlign(CENTER, CENTER);
+    textSize(20);
+    text(i + 1, btnX + buttonWidth / 2, btnY + buttonHeight / 2);
+
+    i++;
+  }
+}
+
 function draw() {
   background(220);
 
@@ -37,4 +53,8 @@ function draw() {
 
   drawSudokuGrid(gridX, gridY, 50);  
 
+  let buttonX = gridX + 9 * 50 + 20;
+  let buttonY = y;
+
+  drawNumbersButton(buttonX + 100, buttonY - 40, 50, 50, 10);
 }
