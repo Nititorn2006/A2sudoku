@@ -54,7 +54,7 @@ function draw() {
   drawSudokuGrid(gridX, gridY, 50);  
 
   let buttonX = gridX + 9 * 50 + 20;
-  let buttonY = y;
+  let buttonY = gridY;
 
   drawNumbersButton(buttonX + 100, buttonY - 40, 50, 50, 10);
 }
