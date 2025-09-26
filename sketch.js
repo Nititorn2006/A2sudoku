@@ -134,6 +134,26 @@ let grid = [
   [0, 0, 0, 0, 8, 0, 0, 7, 9],
 ];
 
+function drawNumbersInGrid(grid, x, y, cellSize) {
+  textAlign(CENTER, CENTER);
+  textSize(30);
+  noFill;
+
+  let row = 0;
+  while (row < 9) {
+    let col = 0;
+    while (col < 9) {
+      if (grid[row][col] !== 0) {
+        let cellX = x + col * cellSize + cellSize / 2;
+        let cellY = y + row * cellSize + cellSize / 2;
+        text(grid[row][col], cellX, cellY);
+      }
+      col++;
+    }
+    row++;
+  }
+}
+
 
 function draw() {
   background(220);
@@ -142,6 +162,7 @@ function draw() {
   let gridY = windowHeight / 2 - 225;
 
   drawSudokuGrid(gridX, gridY, 50);  
+  drawNumbersInGrid(grid, gridX, gridY, 50);
 
   let buttonX = gridX + 9 * 50 + 20;
   let buttonY = gridY;
