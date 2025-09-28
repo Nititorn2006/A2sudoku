@@ -184,15 +184,33 @@ function mouseReleased() {
       let col = Math.floor((mouseX - gridX) / cellSize);
       let row = Math.floor((mouseY - gridY) / cellSize);
 
-      grid[row][col] = draggingNumber;
-        }
+      if (!lockedCells[row][col]) {
+        grid[row][col] = draggingNumber;
+      }
+      }
         draggingNumber = null;
       }
     }
 
+let lockedCells = [];
+
+function setupLockedCells(grid) {
+  let row = 0;
+  while (row < 9) {
+    lockedCells[row] = [];
+    let col = 0;
+    while (col < 9) {
+      lockedCells[row][col] = grid[row][col] !== 0;
+      col++;
+    }
+    row++;
+  }
+}
+
 function draw() {
   background(220);
 
+  setupLockedCells(grid);
   gridX = windowWidth / 2 - 225;
   gridY = windowHeight / 2 - 225;
 
