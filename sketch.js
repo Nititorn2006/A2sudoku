@@ -12,6 +12,7 @@ function drawSudokuGrid(x, y, cellSize) {
 
       stroke(0);
       strokeWeight(1);
+      fill(500);
       rect(cellX, cellY, cellSize, cellSize);
 
       col++;
@@ -34,11 +35,11 @@ function drawNumbersButton(x, y, buttonWidth, buttonHeight, spacing) {
   while (i < 9) {
     let btnX = x;
     let btnY = y + i * (buttonHeight + spacing);
+    fill(255);
     rect(btnX, btnY, buttonWidth, buttonHeight, 5);
 
-    fill(255);
+    fill(0);
     textAlign(CENTER, CENTER);
-    textSize(20);
     text(i + 1, btnX + buttonWidth / 2, btnY + buttonHeight / 2);
 
     i++;
@@ -137,7 +138,7 @@ let grid = [
 function drawNumbersInGrid(grid, x, y, cellSize) {
   textAlign(CENTER, CENTER);
   textSize(30);
-  noFill;
+  fill(0);
 
   let row = 0;
   while (row < 9) {
@@ -154,18 +155,59 @@ function drawNumbersInGrid(grid, x, y, cellSize) {
   }
 }
 
+let draggingNumber = null;
+let dragOffsetX = 0;
+let dragOffsetY = 0;
+let gridX, gridY, cellSize = 50;
+let buttonX, buttonY;
+
+function mousePressed() {
+  let i = 0;
+  while (i < 9) {
+    let btnX = buttonX;
+    let btnY = buttonY + i * (50 + 10);
+    if (mouseX > btnX && mouseX < btnX + 50 &&
+      mouseY > btnY && mouseY < btnY + 50) {
+        draggingNumber = i + 1;
+        dragOffsetX = mouseX - (btnX + 25);
+        dragOffsetY = mouseY - (btnY + 25);
+        break;
+      }
+    i++;
+  }
+}
+
+function mouseReleased() {
+  if (draggingNumber !== null) {
+    if (mouseX > gridX && mouseX < gridX + 9 * cellSize &&
+        mouseY > gridY && mouseY < gridY + 9 * cellSize) {
+      let col = Math.floor((mouseX - gridX) / cellSize);
+      let row = Math.floor((mouseY - gridY) / cellSize);
+
+      grid[row][col] = draggingNumber;
+        }
+        draggingNumber = null;
+      }
+    }
 
 function draw() {
   background(220);
 
-  let gridX = windowWidth / 2 - 225;
-  let gridY = windowHeight / 2 - 225;
+  gridX = windowWidth / 2 - 225;
+  gridY = windowHeight / 2 - 225;
 
   drawSudokuGrid(gridX, gridY, 50);  
   drawNumbersInGrid(grid, gridX, gridY, 50);
 
-  let buttonX = gridX + 9 * 50 + 20;
-  let buttonY = gridY;
+  buttonX = gridX + 9 * 50 + 20;
+  buttonY = gridY;
 
-  drawNumbersButton(buttonX + 100, buttonY - 40, 50, 50, 10);
+  drawNumbersButton(buttonX, buttonY, 50, 50, 10);
+
+  if (draggingNumber !== null) {
+  textAlign(CENTER, CENTER);
+  textSize(30);
+  fill(0);
+  text(draggingNumber, mouseX, mouseY);
+}
 }
