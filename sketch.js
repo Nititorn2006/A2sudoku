@@ -211,6 +211,24 @@ function setupLockedCells(grid) {
     }
 }
 
+let solvedGrid = JSON.parse(JSON.stringify(grid));
+solveSudoku(solvedGrid);
+
+function checkAnswer(playerGrid, solutionGrid) {
+    let row = 0;
+    while (row < 9) {
+        let col = 0;
+        while (col < 9) {
+            if (playerGrid[row][col] !== solutionGrid[row][col]) {
+                return false;
+            }
+            col++;
+        }
+        row++;
+    }
+    return true;
+}
+    
 function draw() {
     background(220);
 
@@ -232,4 +250,12 @@ function draw() {
         fill(0);
         text(draggingNumber, mouseX, mouseY);
     }
+
+    if (checkAnswer(grid, solvedGrid)) {
+        textAlign(CENTER, CENTER);
+        textSize(50);
+        fill(0, 150, 0);
+        text("YOU WIN!", windowWidth / 2, gridY - 60);
+    }
+
 }
