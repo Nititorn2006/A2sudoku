@@ -1,6 +1,12 @@
 function setup() {
     createCanvas(windowWidth, windowHeight);
     setupLockedCells(grid);
+
+    gridX = windowWidth / 2 - (cellSize * 9) / 2;
+    gridY = windowHeight / 2 - (cellSize * 9) / 2;
+
+    buttonX = gridX + cellSize * 9 + 50;
+    buttonY = gridY - 50;
 }
 
 function drawSudokuGrid(x, y, cellSize) {
@@ -33,6 +39,8 @@ function drawSudokuGrid(x, y, cellSize) {
 
 function drawNumbersButton(x, y, buttonWidth, buttonHeight, spacing) {
     let i = 0;
+    textSize(20);
+    strokeWeight(2);
     while (i < 9) {
         let btnX = x;
         let btnY = y + i * (buttonHeight + spacing);
@@ -169,22 +177,39 @@ let dragOffsetX = 0;
 let dragOffsetY = 0;
 let gridX, gridY, cellSize = 50;
 let buttonX, buttonY;
+let draggingDelete;
 
 function mousePressed() {
     let i = 0;
     while (i < 9) {
         let btnX = buttonX;
         let btnY = buttonY + i * (50 + 10);
+
         if (
             mouseX > btnX && mouseX < btnX + 50 &&
             mouseY > btnY && mouseY < btnY + 50
         ) {
+
             draggingNumber = i + 1;
+            draggingDelete = false;
             dragOffsetX = mouseX - (btnX + 25);
             dragOffsetY = mouseY - (btnY + 25);
-            break;
+            deleteMode = false;
+            return;
         }
         i++;
+    }
+
+    let delX = buttonX;
+    let delY = buttonY + 9 * (50 + 10);
+    if (
+        mouseX > delX && mouseX < delX + 50 &&
+        mouseY > delY && mouseY < delY + 50
+    ) {
+        deleteMode = true;
+        draggingNumber = null;
+        draggingDelete = true;
+        return;
     }
 }
 
@@ -202,8 +227,26 @@ function mouseReleased() {
             }
         }
         draggingNumber = null;
+
     }
+
+    if (deleteMode) {
+        if (
+            mouseX > gridX && mouseX < gridX + 9 * cellSize &&
+            mouseY > gridY && mouseY < gridY + 9 * cellSize
+         ) {
+            let col = Math.floor((mouseX - gridX) / cellSize);
+            let row = Math.floor((mouseY - gridY) / cellSize);
+    
+            if (!lockedCells[row][col]) {
+                grid[row][col] = UNASSIGNED;
+            }
+        }
+    }
+    deleteMode = false;
+    draggingDelete = false;
 }
+
 
 let lockedCells = [];
 
@@ -237,18 +280,24 @@ function checkAnswer(playerGrid, solutionGrid) {
     }
     return true;
 }
+
+let deleteMode = false;
+
+function drawDeleteButton(x, y, buttonWidth, buttonHeight) {
+    fill(255, 100, 100);
+    rect(x, y, buttonWidth, buttonHeight, 5);
+
+    fill(0);
+    textAlign(CENTER, CENTER);
+    textSize(20);
+    text("DEL", x + buttonWidth / 2, y + buttonHeight / 2);
+}
     
 function draw() {
     background(220);
 
-    gridX = windowWidth / 2 - 225;
-    gridY = windowHeight / 2 - 225;
-
     drawSudokuGrid(gridX, gridY, 50);  
     drawNumbersInGrid(grid, gridX, gridY, 50);
-
-    buttonX = gridX + 10 * 50 + 20;
-    buttonY = gridY - 50;
 
     drawNumbersButton(buttonX, buttonY, 50, 50, 10);
 
@@ -259,11 +308,20 @@ function draw() {
         text(draggingNumber, mouseX, mouseY);
     }
 
+    drawDeleteButton(buttonX, buttonY + 9 * (50 + 10), 50, 50);
+
+    if (draggingDelete) {
+        textAlign(CENTER, CENTER);
+        textSize(20);
+        fill(255, 100, 100);
+        noStroke();
+        text("DEL", mouseX, mouseY);
+    }
+
     if (checkAnswer(grid, solvedGrid)) {
         textAlign(CENTER, CENTER);
         textSize(50);
         fill(0, 150, 0);
         text("YOU WIN!", windowWidth / 2, gridY - 60);
     }
-
 }
