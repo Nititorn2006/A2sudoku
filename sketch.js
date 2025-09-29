@@ -1,5 +1,6 @@
 function setup() {
     createCanvas(windowWidth, windowHeight);
+    setupLockedCells(grid);
 }
 
 function drawSudokuGrid(x, y, cellSize) {
@@ -12,7 +13,7 @@ function drawSudokuGrid(x, y, cellSize) {
 
             stroke(0);
             strokeWeight(1);
-            fill(500);
+            fill(255);
             rect(cellX, cellY, cellSize, cellSize);
 
             col++;
@@ -139,6 +140,7 @@ function drawNumbersInGrid(grid, x, y, cellSize) {
     textAlign(CENTER, CENTER);
     textSize(30);
     fill(0);
+    strokeWeight(0);
 
     let row = 0;
     while (row < 9) {
@@ -147,6 +149,13 @@ function drawNumbersInGrid(grid, x, y, cellSize) {
             if (grid[row][col] !== 0) {
                 let cellX = x + col * cellSize + cellSize / 2;
                 let cellY = y + row * cellSize + cellSize / 2;
+
+                if (lockedCells[row][col]) {
+                    fill(0);
+                } else {
+                    fill(0, 0, 255);
+                }
+
                 text(grid[row][col], cellX, cellY);
             }
             col++;
@@ -232,15 +241,14 @@ function checkAnswer(playerGrid, solutionGrid) {
 function draw() {
     background(220);
 
-    setupLockedCells(grid);
     gridX = windowWidth / 2 - 225;
     gridY = windowHeight / 2 - 225;
 
     drawSudokuGrid(gridX, gridY, 50);  
     drawNumbersInGrid(grid, gridX, gridY, 50);
 
-    buttonX = gridX + 9 * 50 + 20;
-    buttonY = gridY;
+    buttonX = gridX + 10 * 50 + 20;
+    buttonY = gridY - 50;
 
     drawNumbersButton(buttonX, buttonY, 50, 50, 10);
 
