@@ -314,7 +314,6 @@ function draw() {
         textAlign(CENTER, CENTER);
         textSize(20);
         fill(255, 100, 100);
-        noStroke();
         text("DEL", mouseX, mouseY);
     }
 
