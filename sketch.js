@@ -3,13 +3,13 @@ function setup() {
     setupLockedCells(grid);
 
     gridX = windowWidth / 2 - (cellSize * 9) / 2;
-    gridY = windowHeight / 2 - (cellSize * 9) / 2;
+    gridY = windowHeight / 2 - (cellSize * 13) / 2;
 
-    buttonX = gridX + cellSize * 9 + 50;
-    buttonY = gridY - 41;
+    buttonX = gridX + cellSize + 90;
+    buttonY = gridY + 480;
 
-    revealX = buttonX + 150;
-    revealY = buttonY + 240;
+    revealX = buttonX + 250;
+    revealY = buttonY + 60;
 }
 
 let revealX, revealY;
@@ -49,8 +49,11 @@ function drawNumbersButton(x, y, buttonWidth, buttonHeight, spacing) {
     textSize(20);
     strokeWeight(2);
     while (i < 9) {
-        let btnX = x;
-        let btnY = y + i * (buttonHeight + spacing);
+        let col = i % 3;
+        let row = 2 - Math.floor(i / 3);
+        let btnX = x + col * (buttonWidth + spacing);
+        let btnY = y + row * (buttonHeight + spacing);
+
         fill(255);
         rect(btnX, btnY, buttonWidth, buttonHeight, 5);
 
@@ -179,91 +182,8 @@ function drawNumbersInGrid(grid, x, y, cellSize) {
     }
 }
 
-let draggingNumber = null;
-let dragOffsetX = 0;
-let dragOffsetY = 0;
 let gridX, gridY, cellSize = 50;
 let buttonX, buttonY;
-let draggingDelete;
-
-function mousePressed() {
-    let i = 0;
-    while (i < 9) {
-        let btnX = buttonX;
-        let btnY = buttonY + i * (50 + 10);
-
-        if (
-            mouseX > btnX && mouseX < btnX + 50 &&
-            mouseY > btnY && mouseY < btnY + 50
-        ) {
-
-            draggingNumber = i + 1;
-            draggingDelete = false;
-            dragOffsetX = mouseX - (btnX + 25);
-            dragOffsetY = mouseY - (btnY + 25);
-            deleteMode = false;
-            return;
-        }
-        i++;
-    }
-
-    let delX = buttonX;
-    let delY = buttonY + 9 * (50 + 10);
-    if (
-        mouseX > delX && mouseX < delX + 50 &&
-        mouseY > delY && mouseY < delY + 50
-    ) {
-        deleteMode = true;
-        draggingNumber = null;
-        draggingDelete = true;
-        return;
-    }
-
-    if (
-    mouseX > revealX && mouseX < revealX + revealWidth &&
-    mouseY > revealY && mouseY < revealY + revealHeight
-    ) {
-
-    grid = JSON.parse(JSON.stringify(solvedGrid));
-    return;
-    }
-
-}
-
-function mouseReleased() {
-    if (draggingNumber !== null) {
-        if (
-            mouseX > gridX && mouseX < gridX + 9 * cellSize &&
-            mouseY > gridY && mouseY < gridY + 9 * cellSize
-        ) {
-            let col = Math.floor((mouseX - gridX) / cellSize);
-            let row = Math.floor((mouseY - gridY) / cellSize);
-
-            if (!lockedCells[row][col]) {
-                grid[row][col] = draggingNumber;
-            }
-        }
-        draggingNumber = null;
-
-    }
-
-    if (deleteMode) {
-        if (
-            mouseX > gridX && mouseX < gridX + 9 * cellSize &&
-            mouseY > gridY && mouseY < gridY + 9 * cellSize
-         ) {
-            let col = Math.floor((mouseX - gridX) / cellSize);
-            let row = Math.floor((mouseY - gridY) / cellSize);
-    
-            if (!lockedCells[row][col]) {
-                grid[row][col] = UNASSIGNED;
-            }
-        }
-    }
-    deleteMode = false;
-    draggingDelete = false;
-}
-
 
 let lockedCells = [];
 
@@ -320,6 +240,60 @@ function drawRevealButton(x, y, w, h) {
     text("REVEAL ANSWER", x + w/2, y + h/2);
 }
     
+let selectedNumber = null;
+
+function mousePressed() {
+    let i = 0;
+    while (i < 9) {
+        let col = i % 3;
+        let row = 2 - Math.floor(i / 3);
+        let btnX = buttonX + col * (50 + 10);
+        let btnY = buttonY + row * (50 + 10);
+
+        if (mouseX > btnX && mouseX < btnX + 50 &&
+            mouseY > btnY && mouseY < btnY + 50) {
+                selectedNumber = i + 1;
+                deleteMode = false;
+                return;
+            }
+            i++;
+    }
+
+    let delX = buttonX - 80;
+    let delY = buttonY;
+    if (mouseX > delX && mouseX < delX + 50 &&
+        mouseY > delY && mouseY < delY + 50) {
+            deleteMode = true;
+            selectedNumber = null;
+            return;
+        }
+
+    if (mouseX > revealX && mouseX < revealX + revealWidth &&
+        mouseY > revealY && mouseY < revealY + revealHeight) {
+            grid = JSON.parse(JSON.stringify(solvedGrid));
+            selectedNumber = null;
+            deleteMode = false;
+            return;
+        }
+
+        if (mouseX > gridX && mouseX < gridX + 9 * cellSize &&
+            mouseY > gridY && mouseY < gridY + 9 * cellSize) {
+
+                let col = Math.floor((mouseX - gridX) / cellSize);
+                let row = Math.floor((mouseY - gridY) / cellSize);
+
+                if (!lockedCells[row][col]) {
+                    if (deleteMode) {
+                        grid[row][col] = UNASSIGNED;
+                        deleteMode = false;
+                    } else if (selectedNumber !== null) {
+                        grid[row][col] = selectedNumber;
+                        selectedNumber = null;
+                    }
+                }
+            }
+}
+
 function draw() {
     background(220);
 
@@ -330,21 +304,7 @@ function draw() {
 
     drawRevealButton(revealX, revealY, revealWidth, revealHeight);
 
-    if (draggingNumber !== null) {
-        textAlign(CENTER, CENTER);
-        textSize(30);
-        fill(0);
-        text(draggingNumber, mouseX, mouseY);
-    }
-
-    drawDeleteButton(buttonX, buttonY + 9 * (50 + 10), 50, 50);
-
-    if (draggingDelete) {
-        textAlign(CENTER, CENTER);
-        textSize(20);
-        fill(255, 100, 100);
-        text("DEL", mouseX, mouseY);
-    }
+    drawDeleteButton(buttonX - 80, buttonY, 50, 50);
 
     if (checkAnswer(grid, solvedGrid)) {
         textAlign(CENTER, CENTER);
