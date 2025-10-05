@@ -55,7 +55,7 @@ function drawNumbersButton(x, y, buttonWidth, buttonHeight, spacing) {
         let btnY = y + row * (buttonHeight + spacing);
 
         fill(255);
-        rect(btnX, btnY, buttonWidth, buttonHeight, 5);
+        rect(btnX, btnY, buttonWidth, buttonHeight);
 
         fill(0);
         textAlign(CENTER, CENTER);
@@ -222,7 +222,7 @@ let deleteMode = false;
 
 function drawDeleteButton(x, y, buttonWidth, buttonHeight) {
     fill(255, 100, 100);
-    rect(x, y, buttonWidth, buttonHeight, 5);
+    rect(x, y, buttonWidth, buttonHeight);
 
     fill(0);
     textAlign(CENTER, CENTER);
@@ -232,7 +232,7 @@ function drawDeleteButton(x, y, buttonWidth, buttonHeight) {
 
 function drawRevealButton(x, y, w, h) {
     fill(100, 200, 255);
-    rect(x, y, w, h, 5);
+    rect(x, y, w, h);
 
     fill(0);
     textAlign(CENTER, CENTER);
