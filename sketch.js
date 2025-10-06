@@ -157,24 +157,27 @@ let grid = [
 function drawNumbersInGrid(grid, x, y, cellSize) {
     textAlign(CENTER, CENTER);
     textSize(30);
-    fill(0);
     strokeWeight(0);
-
+    
     let row = 0;
     while (row < 9) {
         let col = 0;
         while (col < 9) {
             if (grid[row][col] !== 0) {
-                let cellX = x + col * cellSize + cellSize / 2;
-                let cellY = y + row * cellSize + cellSize / 2;
-
+                let cellX = x + col * cellSize;
+                let cellY = y + row * cellSize;
+                
                 if (lockedCells[row][col]) {
+                    fill(200, 200, 200, 150);
+                    noStroke();
+                    rect(gridX + col * cellSize, gridY + row * cellSize, cellSize, cellSize)
                     fill(0);
+                    stroke(0);
                 } else {
                     fill(0, 0, 255);
                 }
-
-                text(grid[row][col], cellX, cellY);
+                
+                text(grid[row][col], cellX + cellSize / 2, cellY + cellSize / 2);
             }
             col++;
         }
@@ -260,7 +263,7 @@ function mousePressed() {
     }
 
     let delX = buttonX - 80;
-    let delY = buttonY;
+    let delY = buttonY + 120;
     if (mouseX > delX && mouseX < delX + 50 &&
         mouseY > delY && mouseY < delY + 50) {
             deleteMode = true;
@@ -297,15 +300,13 @@ function mousePressed() {
 function draw() {
     background(220);
 
-    drawSudokuGrid(gridX, gridY, 50);  
+    drawSudokuGrid(gridX, gridY, 50);
     drawNumbersInGrid(grid, gridX, gridY, 50);
 
     drawNumbersButton(buttonX, buttonY, 50, 50, 10);
-
     drawRevealButton(revealX, revealY, revealWidth, revealHeight);
-
-    drawDeleteButton(buttonX - 80, buttonY, 50, 50);
-
+    drawDeleteButton(buttonX - 80, buttonY + 120, 50, 50);
+    
     if (checkAnswer(grid, solvedGrid)) {
         textAlign(CENTER, CENTER);
         textSize(50);
