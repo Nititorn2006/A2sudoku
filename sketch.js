@@ -163,6 +163,23 @@ function drawNumbersInGrid(grid, x, y, cellSize) {
     while (row < 9) {
         let col = 0;
         while (col < 9) {
+            if (grid[row][col] !== 0 && grid[row][col] !== solvedGrid[row][col]) {
+                let c = 0;
+                while (c < 9) {
+                    fill(255, 200, 200, 150);
+                    noStroke();
+                    rect(x + c * cellSize, y + row * cellSize, cellSize, cellSize);
+                    c++;
+                }
+
+                let r = 0;
+                while(r < 9) {
+                    fill(255, 200, 200, 150);
+                    noStroke();
+                    rect(x + col * cellSize, y + r * cellSize, cellSize, cellSize);
+                    r++;
+                }
+            }
             if (grid[row][col] !== 0) {
                 let cellX = x + col * cellSize;
                 let cellY = y + row * cellSize;
@@ -173,8 +190,10 @@ function drawNumbersInGrid(grid, x, y, cellSize) {
                     rect(gridX + col * cellSize, gridY + row * cellSize, cellSize, cellSize)
                     fill(0);
                     stroke(0);
-                } else {
+                } else if (grid[row][col] === solvedGrid[row][col]) {
                     fill(0, 0, 255);
+                } else {
+                    fill(255, 0, 0);
                 }
                 
                 text(grid[row][col], cellX + cellSize / 2, cellY + cellSize / 2);
