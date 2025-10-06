@@ -320,12 +320,14 @@ function mousePressed() {
             }
 }
 
+
+
 function draw() {
     background(220);
-
+    
     drawSudokuGrid(gridX, gridY, 50);
     drawNumbersInGrid(grid, gridX, gridY, 50);
-
+    
     drawNumbersButton(buttonX - 140, buttonY, 50, 50, 10);
     drawRevealButton(revealX, revealY, revealWidth, revealHeight);
     drawDeleteButton(buttonX - 140, buttonY + 190, 50, 50);
@@ -335,5 +337,21 @@ function draw() {
         textSize(50);
         fill(0, 150, 0);
         text("YOU WIN!", windowWidth / 2, gridY - 60);
+
     }
+
+    textSize(20);
+    strokeWeight(0);
+    fill(0);
+    textAlign(LEFT, CENTER);
+    text
+    
+    let displayText = "Selected: ";
+    if (selectedNumber !== null) {
+        displayText += selectedNumber;
+    } else {
+        displayText += "-";
+    }
+    
+    text(displayText, gridX + 350, gridY - 40);
 }
