@@ -264,6 +264,9 @@ function drawRevealButton(x, y, w, h) {
     
 let selectedNumber = null;
 
+let lastPlacedCell = null;
+let feedbackMessage = "Select a number to place :)";
+
 function mousePressed() {
     let buttonWidth = 50;
     let buttonHeight = 50;
@@ -312,8 +315,15 @@ function mousePressed() {
                     if (deleteMode) {
                         grid[row][col] = UNASSIGNED;
                         deleteMode = false;
+                        lastPlacedCell = null;
                     } else if (selectedNumber !== null) {
                         grid[row][col] = selectedNumber;
+                        lastPlacedCell = {row,col};
+                        if (grid[row][col] === solvedGrid[row][col]) {
+                            feedbackMessage = "good :)"
+                        } else {
+                            feedbackMessage = "not good :("
+                        }
                         selectedNumber = null;
                     }
                 }
@@ -342,8 +352,8 @@ function draw() {
         strokeWeight(0);
         fill(0);
         textAlign(LEFT, CENTER);
-        text
         
+
         let displayText = "Selected: ";
         if (deleteMode) {
             displayText += "Delete Mode";
@@ -352,8 +362,10 @@ function draw() {
         } else {
             displayText += "-";
         }
-        
         text(displayText, gridX + 350, gridY - 40);
+
+        let hintText = feedbackMessage;
+        text(hintText, gridX - 10, gridY - 40);
     }
 
 }
