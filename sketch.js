@@ -134,7 +134,7 @@ function solveSudoku(grid) {
     while (num <= 9) {
         if (isSafe(grid, row, col, num)) {
             grid[row][col] = num;
-            if (solveSudoku(grid)) return true;
+        if (solveSudoku(grid)) return true;
             grid[row][col] = UNASSIGNED;
         }
         num++;
@@ -246,15 +246,19 @@ function drawRevealButton(x, y, w, h) {
 let selectedNumber = null;
 
 function mousePressed() {
+    let buttonWidth = 50;
+    let buttonHeight = 50;
+    let spacing = 10;
+
     let i = 0;
     while (i < 9) {
         let col = i % 3;
         let row = 2 - Math.floor(i / 3);
-        let btnX = buttonX + col * (50 + 10);
-        let btnY = buttonY + row * (50 + 10);
+        let btnX = buttonX - 140 + col * (buttonWidth + spacing);
+        let btnY = buttonY + row * (buttonHeight + spacing);
 
-        if (mouseX > btnX && mouseX < btnX + 50 &&
-            mouseY > btnY && mouseY < btnY + 50) {
+        if (mouseX > btnX && mouseX < btnX + buttonWidth &&
+            mouseY > btnY && mouseY < btnY + buttonHeight) {
                 selectedNumber = i + 1;
                 deleteMode = false;
                 return;
@@ -262,8 +266,8 @@ function mousePressed() {
             i++;
     }
 
-    let delX = buttonX - 80;
-    let delY = buttonY + 120;
+    let delX = buttonX - 140;
+    let delY = buttonY + 190;
     if (mouseX > delX && mouseX < delX + 50 &&
         mouseY > delY && mouseY < delY + 50) {
             deleteMode = true;
@@ -303,9 +307,9 @@ function draw() {
     drawSudokuGrid(gridX, gridY, 50);
     drawNumbersInGrid(grid, gridX, gridY, 50);
 
-    drawNumbersButton(buttonX, buttonY, 50, 50, 10);
+    drawNumbersButton(buttonX - 140, buttonY, 50, 50, 10);
     drawRevealButton(revealX, revealY, revealWidth, revealHeight);
-    drawDeleteButton(buttonX - 80, buttonY + 120, 50, 50);
+    drawDeleteButton(buttonX - 140, buttonY + 190, 50, 50);
     
     if (checkAnswer(grid, solvedGrid)) {
         textAlign(CENTER, CENTER);
