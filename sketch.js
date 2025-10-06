@@ -345,7 +345,9 @@ function draw() {
         text
         
         let displayText = "Selected: ";
-        if (selectedNumber !== null) {
+        if (deleteMode) {
+            displayText += "Delete Mode";
+        } else if (selectedNumber !== null) {
             displayText += selectedNumber;
         } else {
             displayText += "-";
