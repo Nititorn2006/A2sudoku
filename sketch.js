@@ -337,21 +337,21 @@ function draw() {
         textSize(50);
         fill(0, 150, 0);
         text("YOU WIN!", windowWidth / 2, gridY - 60);
-
-    }
-
-    textSize(20);
-    strokeWeight(0);
-    fill(0);
-    textAlign(LEFT, CENTER);
-    text
-    
-    let displayText = "Selected: ";
-    if (selectedNumber !== null) {
-        displayText += selectedNumber;
     } else {
-        displayText += "-";
+        textSize(20);
+        strokeWeight(0);
+        fill(0);
+        textAlign(LEFT, CENTER);
+        text
+        
+        let displayText = "Selected: ";
+        if (selectedNumber !== null) {
+            displayText += selectedNumber;
+        } else {
+            displayText += "-";
+        }
+        
+        text(displayText, gridX + 350, gridY - 40);
     }
-    
-    text(displayText, gridX + 350, gridY - 40);
+
 }
