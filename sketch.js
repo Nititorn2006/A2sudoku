@@ -290,7 +290,6 @@ function mousePressed() {
                 if (!fixed[row][col]) {
                     if (deleteMode) {
                         grid[row][col] = UNASSIGNED;
-                        deleteMode = false;
                         lastPlacedCell = null;
                     } else if (selectedNumber !== null) {
                         grid[row][col] = selectedNumber;
@@ -300,13 +299,10 @@ function mousePressed() {
                         } else {
                             feedbackMessage = "not good :("
                         }
-                        selectedNumber = null;
                     }
                 }
             }
 }
-
-
 
 function draw() {
     background(220);
