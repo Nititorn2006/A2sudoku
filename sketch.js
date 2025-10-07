@@ -7,14 +7,7 @@ function setup() {
 
     buttonX = gridX + cellSize + 90;
     buttonY = gridY + 480;
-
-    revealX = buttonX + 250;
-    revealY = buttonY + 60;
 }
-
-let revealX, revealY;
-let revealWidth = 200;
-let revealHeight = 50;
 
 function drawSudokuGrid(x, y, cellSize) {
     let row = 0;
@@ -252,16 +245,6 @@ function drawDeleteButton(x, y, buttonWidth, buttonHeight) {
     textSize(20);
     text("X", x + buttonWidth / 2, y + buttonHeight / 2);
 }
-
-function drawRevealButton(x, y, w, h) {
-    fill(100, 200, 255);
-    rect(x, y, w, h);
-
-    fill(0);
-    textAlign(CENTER, CENTER);
-    textSize(18);
-    text("REVEAL ANSWER", x + w/2, y + h/2);
-}
     
 let selectedNumber = null;
 
@@ -295,14 +278,6 @@ function mousePressed() {
         mouseY > delY && mouseY < delY + 50) {
             deleteMode = true;
             selectedNumber = null;
-            return;
-        }
-
-    if (mouseX > revealX && mouseX < revealX + revealWidth &&
-        mouseY > revealY && mouseY < revealY + revealHeight) {
-            grid = JSON.parse(JSON.stringify(solvedGrid));
-            selectedNumber = null;
-            deleteMode = false;
             return;
         }
 
@@ -340,7 +315,6 @@ function draw() {
     drawNumbersInGrid(grid, gridX, gridY, 50);
     
     drawNumbersButton(buttonX - 140, buttonY, 50, 50, 10);
-    drawRevealButton(revealX, revealY, revealWidth, revealHeight);
     drawDeleteButton(buttonX - 140, buttonY + 190, 50, 50);
     
     if (checkAnswer(grid, solvedGrid)) {
