@@ -184,7 +184,7 @@ function drawNumbersInGrid(grid, x, y, cellSize) {
                 let cellX = x + col * cellSize;
                 let cellY = y + row * cellSize;
                 
-                if (lockedCells[row][col]) {
+                if (fixed[row][col]) {
                     fill(200, 200, 200, 150);
                     noStroke();
                     rect(gridX + col * cellSize, gridY + row * cellSize, cellSize, cellSize)
@@ -207,15 +207,15 @@ function drawNumbersInGrid(grid, x, y, cellSize) {
 let gridX, gridY, cellSize = 50;
 let buttonX, buttonY;
 
-let lockedCells = [];
+let fixed = [];
 
 function setupLockedCells(grid) {
     let row = 0;
     while (row < 9) {
-        lockedCells[row] = [];
+        fixed[row] = [];
         let col = 0;
         while (col < 9) {
-            lockedCells[row][col] = grid[row][col] !== 0;
+            fixed[row][col] = grid[row][col] !== 0;
             col++;
         }
         row++;
@@ -312,7 +312,7 @@ function mousePressed() {
                 let col = Math.floor((mouseX - gridX) / cellSize);
                 let row = Math.floor((mouseY - gridY) / cellSize);
 
-                if (!lockedCells[row][col]) {
+                if (!fixed[row][col]) {
                     if (deleteMode) {
                         grid[row][col] = UNASSIGNED;
                         deleteMode = false;
