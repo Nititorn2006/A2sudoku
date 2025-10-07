@@ -244,12 +244,13 @@ let deleteMode = false;
 
 function drawDeleteButton(x, y, buttonWidth, buttonHeight) {
     fill(255, 100, 100);
+    stroke(0);
     rect(x, y, buttonWidth, buttonHeight);
-
+    
     fill(0);
     textAlign(CENTER, CENTER);
     textSize(20);
-    text("DEL", x + buttonWidth / 2, y + buttonHeight / 2);
+    text("X", x + buttonWidth / 2, y + buttonHeight / 2);
 }
 
 function drawRevealButton(x, y, w, h) {
