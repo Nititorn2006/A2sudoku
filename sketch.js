@@ -1,5 +1,5 @@
 let init_number = [];
-let userNumber;
+let solutionGrid;
 
 function preload() {
     loadStrings("puzzle.txt", (lines) => {
@@ -9,8 +9,8 @@ function preload() {
 }
 
 function setup() {
-    userNumber = JSON.parse(JSON.stringify(init_number));
-    solveSudoku(userNumber);
+    solutionGrid = JSON.parse(JSON.stringify(init_number));
+    solveSudoku(solutionGrid);
 
     createCanvas(windowWidth, windowHeight);
     setupLockedCells(init_number);
@@ -157,7 +157,7 @@ function drawNumber(init_number, x, y, cellSize) {
     while (row < 9) {
         let col = 0;
         while (col < 9) {
-            if (init_number[row][col] !== 0 && init_number[row][col] !== userNumber[row][col]) {
+            if (init_number[row][col] !== 0 && init_number[row][col] !== solutionGrid[row][col]) {
                 let c = 0;
                 while (c < 9) {
                     fill(255, 200, 200, 150);
@@ -184,7 +184,7 @@ function drawNumber(init_number, x, y, cellSize) {
                     rect(gridX + col * cellSize, gridY + row * cellSize, cellSize, cellSize)
                     fill(0);
                     stroke(0);
-                } else if (init_number[row][col] === userNumber[row][col]) {
+                } else if (init_number[row][col] === solutionGrid[row][col]) {
                     fill(0, 0, 255);
                 } else {
                     fill(255, 0, 0);
@@ -293,7 +293,7 @@ function mousePressed() {
                     } else if (selectedNumber !== null) {
                         init_number[row][col] = selectedNumber;
                         lastPlacedCell = {row,col};
-                        if (init_number[row][col] === userNumber[row][col]) {
+                        if (init_number[row][col] === solutionGrid[row][col]) {
                             feedbackMessage = "good :)"
                         } else {
                             feedbackMessage = "not good :("
@@ -312,7 +312,7 @@ function draw() {
     drawNumpad(buttonX - 140, buttonY, 50, 50, 10);
     deleteButton(buttonX - 140, buttonY + 190, 50, 50);
     
-    if (checkAnswer(init_number, userNumber)) {
+    if (checkAnswer(init_number, solutionGrid)) {
         textAlign(CENTER, CENTER);
         textSize(50);
         fill(0, 150, 0);
