@@ -1,19 +1,19 @@
-let grid = [];
-let solvedGrid;
+let init_number = [];
+let userNumber;
 
 function preload() {
     loadStrings("puzzle.txt", (lines) => {
-        grid = lines.map(line => line.split(" ").map(Number));
-        console.log(grid);
+        init_number = lines.map(line => line.split(" ").map(Number));
+        console.log(init_number);
     });
 }
 
 function setup() {
-    solvedGrid = JSON.parse(JSON.stringify(grid));
-    solveSudoku(solvedGrid);
+    userNumber = JSON.parse(JSON.stringify(init_number));
+    solveSudoku(userNumber);
 
     createCanvas(windowWidth, windowHeight);
-    setupLockedCells(grid);
+    setupLockedCells(init_number);
 
     gridX = windowWidth / 2 - (cellSize * 9) / 2;
     gridY = windowHeight / 2 - (cellSize * 13) / 2;
@@ -50,7 +50,7 @@ function drawSudokuGrid(x, y, cellSize) {
     }
 }
 
-function drawNumbersButton(x, y, buttonWidth, buttonHeight, spacing) {
+function drawNumpad(x, y, buttonWidth, buttonHeight, spacing) {
     let i = 0;
     textSize(20);
     strokeWeight(2);
@@ -74,12 +74,12 @@ function drawNumbersButton(x, y, buttonWidth, buttonHeight, spacing) {
 const UNASSIGNED = 0;
 const N = 9;
 
-function findUnassignedLocation(grid, pos) {
+function findUnassignedLocation(init_number, pos) {
     let row = 0;
     while (row < N) {
         let col = 0;
         while (col < N) {
-            if (grid[row][col] === UNASSIGNED) {
+            if (init_number[row][col] === UNASSIGNED) {
                 pos.row = row;
                 pos.col = col;
                 return true;
@@ -91,30 +91,30 @@ function findUnassignedLocation(grid, pos) {
     return false;
 }
 
-function usedInRow(grid, row, num) {
+function usedInRow(init_number, row, num) {
     let col = 0;
     while (col < N) {
-        if (grid[row][col] === num) return true;
+        if (init_number[row][col] === num) return true;
         col++;
     }
     return false;
 }
 
-function usedInCol(grid, col, num) {
+function usedInCol(init_number, col, num) {
     let row = 0;
     while (row < N) {
-        if (grid[row][col] === num) return true;
+        if (init_number[row][col] === num) return true;
         row++;
     }
     return false;
 }
 
-function usedInBox(grid, boxStartRow, boxStartCol, num) {
+function usedInBox(init_number, boxStartRow, boxStartCol, num) {
     let row = 0;
     while (row < 3) {
         let col = 0;
         while (col < 3) {
-            if (grid[row + boxStartRow][col + boxStartCol] === num) return true;
+            if (init_number[row + boxStartRow][col + boxStartCol] === num) return true;
             col++;
         }
         row++;
@@ -122,33 +122,33 @@ function usedInBox(grid, boxStartRow, boxStartCol, num) {
     return false;
 }
 
-function isSafe(grid, row, col, num) {
+function isSafe(init_number, row, col, num) {
     return (
-        !usedInRow(grid, row, num) &&
-        !usedInCol(grid, col, num) &&
-        !usedInBox(grid, row - (row % 3), col - (col % 3), num) &&
-        grid[row][col] === UNASSIGNED
+        !usedInRow(init_number, row, num) &&
+        !usedInCol(init_number, col, num) &&
+        !usedInBox(init_number, row - (row % 3), col - (col % 3), num) &&
+        init_number[row][col] === UNASSIGNED
     );
 }
 
-function solveSudoku(grid) {
+function solveSudoku(init_number) {
     let pos = { row: 0, col: 0 };
-    if (!findUnassignedLocation(grid, pos)) return true;
+    if (!findUnassignedLocation(init_number, pos)) return true;
     let row = pos.row;
     let col = pos.col;
     let num = 1;
     while (num <= 9) {
-        if (isSafe(grid, row, col, num)) {
-            grid[row][col] = num;
-        if (solveSudoku(grid)) return true;
-            grid[row][col] = UNASSIGNED;
+        if (isSafe(init_number, row, col, num)) {
+            init_number[row][col] = num;
+        if (solveSudoku(init_number)) return true;
+            init_number[row][col] = UNASSIGNED;
         }
         num++;
     }
     return false;
 }
 
-function drawNumbersInGrid(grid, x, y, cellSize) {
+function drawNumber(init_number, x, y, cellSize) {
     textAlign(CENTER, CENTER);
     textSize(30);
     strokeWeight(0);
@@ -157,7 +157,7 @@ function drawNumbersInGrid(grid, x, y, cellSize) {
     while (row < 9) {
         let col = 0;
         while (col < 9) {
-            if (grid[row][col] !== 0 && grid[row][col] !== solvedGrid[row][col]) {
+            if (init_number[row][col] !== 0 && init_number[row][col] !== userNumber[row][col]) {
                 let c = 0;
                 while (c < 9) {
                     fill(255, 200, 200, 150);
@@ -174,7 +174,7 @@ function drawNumbersInGrid(grid, x, y, cellSize) {
                     r++;
                 }
             }
-            if (grid[row][col] !== 0) {
+            if (init_number[row][col] !== 0) {
                 let cellX = x + col * cellSize;
                 let cellY = y + row * cellSize;
                 
@@ -184,13 +184,13 @@ function drawNumbersInGrid(grid, x, y, cellSize) {
                     rect(gridX + col * cellSize, gridY + row * cellSize, cellSize, cellSize)
                     fill(0);
                     stroke(0);
-                } else if (grid[row][col] === solvedGrid[row][col]) {
+                } else if (init_number[row][col] === userNumber[row][col]) {
                     fill(0, 0, 255);
                 } else {
                     fill(255, 0, 0);
                 }
                 
-                text(grid[row][col], cellX + cellSize / 2, cellY + cellSize / 2);
+                text(init_number[row][col], cellX + cellSize / 2, cellY + cellSize / 2);
             }
             col++;
         }
@@ -203,13 +203,13 @@ let buttonX, buttonY;
 
 let fixed = [];
 
-function setupLockedCells(grid) {
+function setupLockedCells(init_number) {
     let row = 0;
     while (row < 9) {
         fixed[row] = [];
         let col = 0;
         while (col < 9) {
-            fixed[row][col] = grid[row][col] !== 0;
+            fixed[row][col] = init_number[row][col] !== 0;
             col++;
         }
         row++;
@@ -234,7 +234,7 @@ function checkAnswer(playerGrid, solutionGrid) {
 
 let deleteMode = false;
 
-function drawDeleteButton(x, y, buttonWidth, buttonHeight) {
+function deleteButton(x, y, buttonWidth, buttonHeight) {
     fill(255, 100, 100);
     stroke(0);
     rect(x, y, buttonWidth, buttonHeight);
@@ -288,12 +288,12 @@ function mousePressed() {
 
                 if (!fixed[row][col]) {
                     if (deleteMode) {
-                        grid[row][col] = UNASSIGNED;
+                        init_number[row][col] = UNASSIGNED;
                         lastPlacedCell = null;
                     } else if (selectedNumber !== null) {
-                        grid[row][col] = selectedNumber;
+                        init_number[row][col] = selectedNumber;
                         lastPlacedCell = {row,col};
-                        if (grid[row][col] === solvedGrid[row][col]) {
+                        if (init_number[row][col] === userNumber[row][col]) {
                             feedbackMessage = "good :)"
                         } else {
                             feedbackMessage = "not good :("
@@ -307,12 +307,12 @@ function draw() {
     background(220);
     
     drawSudokuGrid(gridX, gridY, 50);
-    drawNumbersInGrid(grid, gridX, gridY, 50);
+    drawNumber(init_number, gridX, gridY, 50);
     
-    drawNumbersButton(buttonX - 140, buttonY, 50, 50, 10);
-    drawDeleteButton(buttonX - 140, buttonY + 190, 50, 50);
+    drawNumpad(buttonX - 140, buttonY, 50, 50, 10);
+    deleteButton(buttonX - 140, buttonY + 190, 50, 50);
     
-    if (checkAnswer(grid, solvedGrid)) {
+    if (checkAnswer(init_number, userNumber)) {
         textAlign(CENTER, CENTER);
         textSize(50);
         fill(0, 150, 0);
@@ -332,7 +332,7 @@ function draw() {
         } else {
             displayText += "-";
         }
-        text(displayText, gridX + 350, gridY - 40);
+        text(displayText, gridX, gridY + 470);
 
         let hintText = feedbackMessage;
         text(hintText, gridX - 10, gridY - 40);
