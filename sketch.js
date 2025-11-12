@@ -1,5 +1,7 @@
 let grid = [];
 let solvedGrid;
+highlightWrongColumn = null;
+highlightWrongRow = null;
 
 function preload() {
     loadStrings("puzzle.txt", (lines) => {
@@ -157,23 +159,6 @@ function drawNumbersInGrid(grid, x, y, cellSize) {
     while (row < 9) {
         let col = 0;
         while (col < 9) {
-            if (grid[row][col] !== 0 && grid[row][col] !== solvedGrid[row][col]) {
-                let c = 0;
-                while (c < 9) {
-                    fill(255, 200, 200, 150);
-                    noStroke();
-                    rect(x + c * cellSize, y + row * cellSize, cellSize, cellSize);
-                    c++;
-                }
-
-                let r = 0;
-                while(r < 9) {
-                    fill(255, 200, 200, 150);
-                    noStroke();
-                    rect(x + col * cellSize, y + r * cellSize, cellSize, cellSize);
-                    r++;
-                }
-            }
             if (grid[row][col] !== 0) {
                 let cellX = x + col * cellSize;
                 let cellY = y + row * cellSize;
@@ -195,6 +180,26 @@ function drawNumbersInGrid(grid, x, y, cellSize) {
             col++;
         }
         row++;
+    }
+}
+
+function highlightRow(x, y, cellSize) {
+    let c = 0;
+    while (c < 9) {
+        fill(255, 200, 200, 150);
+        noStroke();
+        rect(x + c * cellSize, y, cellSize, cellSize);
+        c++;
+    }
+}
+
+function highlightColumn(x, y, cellSize) {
+    let r = 0;
+    while (r < 9) {
+        fill(255, 200, 200, 150);
+        noStroke();
+        rect(x, y + r * cellSize, cellSize, cellSize);
+        r++;
     }
 }
 
@@ -244,7 +249,7 @@ function drawDeleteButton(x, y, buttonWidth, buttonHeight) {
     textSize(20);
     text("X", x + buttonWidth / 2, y + buttonHeight / 2);
 }
-    
+
 let selectedNumber = null;
 
 let lastPlacedCell = null;
@@ -300,6 +305,14 @@ function mousePressed() {
                         }
                     }
                 }
+
+                if (grid[row][col] !== 0 && grid[row][col] !== solvedGrid[row][col]) {
+                    highlightWrongRow = row;
+                    highlightWrongColumn = col;
+                } else {
+                    highlightWrongRow = null;
+                    highlightWrongColumn = null;
+                }
             }
 }
 
@@ -338,4 +351,10 @@ function draw() {
         text(hintText, gridX - 10, gridY - 40);
     }
 
+    if (highlightWrongRow !== null) {
+        highlightRow(gridX, gridY + highlightWrongRow * cellSize, cellSize);
+    }
+    if (highlightWrongColumn !== null) {
+        highlightColumn(gridX + highlightWrongColumn * cellSize, gridY, cellSize);
+    }
 }
