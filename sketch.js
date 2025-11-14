@@ -316,6 +316,29 @@ function mousePressed() {
             }
 }
 
+function countEmptyCellsInRow(grid, row) {
+    let col = 0;
+    let count = 0;
+
+    while (col < 9) {
+        if (grid[row][col] === 0) {
+            count++;
+        }
+        col++;
+    }
+
+    return count;
+}
+
+function displayEmptyCellsInRow(grid, row, x, y) {
+    let emptyCount = countEmptyCellsInRow(grid, row);
+
+    textAlign(LEFT, CENTER);
+    textSize(20);
+    fill(0);
+    text(emptyCount, x, y);
+}
+
 function draw() {
     background(220);
     
@@ -356,5 +379,11 @@ function draw() {
     }
     if (highlightWrongColumn !== null) {
         highlightColumn(gridX + highlightWrongColumn * cellSize, gridY, cellSize);
+    }
+
+    let r = 0;
+    while (r < 9) {
+        displayEmptyCellsInRow(grid, r, gridX + 500, gridY + r * cellSize + 25);
+        r++;
     }
 }
