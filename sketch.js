@@ -330,15 +330,35 @@ function countEmptyCellsInRow(grid, row) {
     return count;
 }
 
-function displayEmptyCellsInRow(grid, row, x, y) {
-    let emptyCount = countEmptyCellsInRow(grid, row);
+// function displayEmptyCellsInRow(grid, row, x, y) {
+//     let emptyCount = countEmptyCellsInRow(grid, row);
 
-    textAlign(LEFT, CENTER);
-    textSize(20);
-    fill(0);
-    text(emptyCount, x, y);
+//     textAlign(LEFT, CENTER);
+//     textSize(20);
+//     fill(0);
+//     text(emptyCount, x, y);
+// }
+
+function highlightEmptyCells() {
+    let r = 0;
+    while (r < 9) {
+        let c = 0;
+        while (c < 9) {
+            if (grid[r][c] == 0) {
+                if (frameCount % 180 < 60) {
+                    noFill();
+                    stroke(255, 205, 0, 150);
+                    strokeWeight(5);
+                    rect(gridX + c * cellSize + 2, gridY + r * cellSize + 2, cellSize - 4, cellSize - 4);
+                    noStroke();
+                }
+            }
+            c++;
+        }
+        r++;
+    }
 }
-
+    
 function draw() {
     background(220);
     
@@ -348,6 +368,8 @@ function draw() {
     drawNumbersButton(buttonX - 140, buttonY, 50, 50, 10);
     drawDeleteButton(buttonX - 140, buttonY + 190, 50, 50);
     
+    highlightEmptyCells();
+
     if (checkAnswer(grid, solvedGrid)) {
         textAlign(CENTER, CENTER);
         textSize(50);
@@ -381,9 +403,9 @@ function draw() {
         highlightColumn(gridX + highlightWrongColumn * cellSize, gridY, cellSize);
     }
 
-    let r = 0;
-    while (r < 9) {
-        displayEmptyCellsInRow(grid, r, gridX + 500, gridY + r * cellSize + 25);
-        r++;
-    }
+    // let r = 0;
+    // while (r < 9) {
+    //     displayEmptyCellsInRow(grid, r, gridX + 500, gridY + r * cellSize + 25);
+    //     r++;
+    // }
 }
