@@ -22,6 +22,8 @@ function setup() {
 
     buttonX = gridX + cellSize + 90;
     buttonY = gridY + 480;
+
+    counterRow = gridX + 9 * cellSize + 50;
 }
 
 function drawSudokuGrid(x, y, cellSize) {
@@ -31,17 +33,17 @@ function drawSudokuGrid(x, y, cellSize) {
         while (col < 9) {
             let cellX = x + col * cellSize;
             let cellY = y + row * cellSize;
-
+            
             stroke(0);
             strokeWeight(1);
             fill(255);
             rect(cellX, cellY, cellSize, cellSize);
-
+            
             col++;
         }
         row++;
     }
-
+    
     let i = 0;
     while (i <= 9) {
         let weight = (i % 3 === 0) ? 3 : 1;
@@ -61,14 +63,14 @@ function drawNumbersButton(x, y, buttonWidth, buttonHeight, spacing) {
         let row = 2 - Math.floor(i / 3);
         let btnX = x + col * (buttonWidth + spacing);
         let btnY = y + row * (buttonHeight + spacing);
-
+        
         fill(255);
         rect(btnX, btnY, buttonWidth, buttonHeight);
-
+        
         fill(0);
         textAlign(CENTER, CENTER);
         text(i + 1, btnX + buttonWidth / 2, btnY + buttonHeight / 2);
-
+        
         i++;
     }
 }
@@ -142,7 +144,7 @@ function solveSudoku(grid) {
     while (num <= 9) {
         if (isSafe(grid, row, col, num)) {
             grid[row][col] = num;
-        if (solveSudoku(grid)) return true;
+            if (solveSudoku(grid)) return true;
             grid[row][col] = UNASSIGNED;
         }
         num++;
@@ -259,6 +261,8 @@ function mousePressed() {
     let buttonWidth = 50;
     let buttonHeight = 50;
     let spacing = 10;
+    
+    rowCounterButtonHitBox();
 
     let i = 0;
     while (i < 9) {
@@ -266,7 +270,7 @@ function mousePressed() {
         let row = 2 - Math.floor(i / 3);
         let btnX = buttonX - 140 + col * (buttonWidth + spacing);
         let btnY = buttonY + row * (buttonHeight + spacing);
-
+        
         if (mouseX > btnX && mouseX < btnX + buttonWidth &&
             mouseY > btnY && mouseY < btnY + buttonHeight) {
                 selectedNumber = i + 1;
@@ -274,68 +278,68 @@ function mousePressed() {
                 return;
             }
             i++;
-    }
-
-    let delX = buttonX - 140;
-    let delY = buttonY + 190;
-    if (mouseX > delX && mouseX < delX + 50 &&
-        mouseY > delY && mouseY < delY + 50) {
-            deleteMode = true;
-            selectedNumber = null;
-            return;
         }
-
-        if (mouseX > gridX && mouseX < gridX + 9 * cellSize &&
-            mouseY > gridY && mouseY < gridY + 9 * cellSize) {
-
-                let col = Math.floor((mouseX - gridX) / cellSize);
-                let row = Math.floor((mouseY - gridY) / cellSize);
-
-                if (!fixed[row][col]) {
-                    if (deleteMode) {
-                        grid[row][col] = UNASSIGNED;
-                        lastPlacedCell = null;
-                    } else if (selectedNumber !== null) {
-                        grid[row][col] = selectedNumber;
-                        lastPlacedCell = {row,col};
-                        if (grid[row][col] === solvedGrid[row][col]) {
-                            feedbackMessage = "good :)"
-                        } else {
-                            feedbackMessage = "not good :("
+        
+        let delX = buttonX - 140;
+        let delY = buttonY + 190;
+        if (mouseX > delX && mouseX < delX + 50 &&
+            mouseY > delY && mouseY < delY + 50) {
+                deleteMode = true;
+                selectedNumber = null;
+                return;
+            }
+            
+            if (mouseX > gridX && mouseX < gridX + 9 * cellSize &&
+                mouseY > gridY && mouseY < gridY + 9 * cellSize) {
+                    
+                    let col = Math.floor((mouseX - gridX) / cellSize);
+                    let row = Math.floor((mouseY - gridY) / cellSize);
+                    
+                    if (!fixed[row][col]) {
+                        if (deleteMode) {
+                            grid[row][col] = UNASSIGNED;
+                            lastPlacedCell = null;
+                        } else if (selectedNumber !== null) {
+                            grid[row][col] = selectedNumber;
+                            lastPlacedCell = {row,col};
+                            if (grid[row][col] === solvedGrid[row][col]) {
+                                feedbackMessage = "good :)"
+                            } else {
+                                feedbackMessage = "not good :("
+                            }
                         }
-                    }
                 }
-
+                
                 if (grid[row][col] !== 0 && grid[row][col] !== solvedGrid[row][col]) {
                     highlightWrongRow = row;
                     highlightWrongColumn = col;
                 } else {
-                    highlightWrongRow = null;
-                    highlightWrongColumn = null;
-                }
+                highlightWrongRow = null;
+                highlightWrongColumn = null;
             }
-}
-
+        }
+    }
+            
 function countEmptyCellsInRow(grid, row) {
     let col = 0;
     let count = 0;
-
+        
     while (col < 9) {
         if (grid[row][col] === 0) {
             count++;
         }
         col++;
     }
-
+        
     return count;
 }
+    
+    // function displayEmptyCellsInRow(grid, row, x, y) {
+        //     let emptyCount = countEmptyCellsInRow(grid, row);
 
-// function displayEmptyCellsInRow(grid, row, x, y) {
-//     let emptyCount = countEmptyCellsInRow(grid, row);
-
-//     textAlign(LEFT, CENTER);
-//     textSize(20);
-//     fill(0);
+        //     textAlign(LEFT, CENTER);
+        //     textSize(20);
+        //     fill(0);
 //     text(emptyCount, x, y);
 // }
 
@@ -345,15 +349,65 @@ function highlightEmptyCells() {
         let c = 0;
         while (c < 9) {
             if (grid[r][c] == 0) {
-                if (frameCount % 180 < 60) {
-                    noFill();
-                    stroke(255, 205, 0, 150);
-                    strokeWeight(5);
-                    rect(gridX + c * cellSize + 2, gridY + r * cellSize + 2, cellSize - 4, cellSize - 4);
-                    noStroke();
-                }
+                noFill();
+                stroke(255, 205, 0, 150);
+                strokeWeight(5);
+                rect(gridX + c * cellSize + 2, gridY + r * cellSize + 2, cellSize - 4, cellSize - 4);
+                noStroke();
             }
             c++;
+        }
+        r++;
+    }
+}
+
+let userRowCount = [0, 0, 0, 0, 0, 0, 0, 0, 0,];
+let buttonSize = 30;
+let counterRow;
+
+function drawRowCounter() {
+    let r = 0;
+    while (r < 9) {
+        textSize(20);
+        noStroke();
+        fill(0);
+
+        let y = gridY + r * cellSize + cellSize / 2;
+        
+        text("Row" + (r + 1), counterRow, y);
+        
+        stroke(0);
+        fill(255);
+        rect(counterRow + 80, y - buttonSize / 2, buttonSize, buttonSize, 5);
+        line(counterRow + 87, y, counterRow + 102, y);
+        
+        noStroke();
+        fill(0);
+        textAlign(CENTER, CENTER);
+        text(userRowCount[r], counterRow + 130, y);
+
+        stroke(0);
+        fill(255);
+        rect(counterRow + 150, y - buttonSize / 2, buttonSize, buttonSize, 5);
+        line(counterRow + 157, y, counterRow + 172, y);
+        line(counterRow + 165, y - 7, counterRow + 165, y + 7);
+        r++;
+    }
+}
+
+function rowCounterButtonHitBox() {
+    let r = 0;
+    while (r < 9) {
+        let y = gridY + r * cellSize + cellSize / 2;
+
+        if (mouseX > counterRow + 80 && mouseX < counterRow + 110 &&
+            mouseY > y - buttonSize / 2 && mouseY < y + buttonSize / 2) {
+            userRowCount[r] = max(0, userRowCount[r] - 1);
+        }
+
+        if (mouseX > counterRow + 150 && mouseX < counterRow + 190 &&
+            mouseY > y - buttonSize / 2 && mouseY < y + buttonSize / 2) {
+            userRowCount[r]++;
         }
         r++;
     }
@@ -368,6 +422,7 @@ function draw() {
     drawNumbersButton(buttonX - 140, buttonY, 50, 50, 10);
     drawDeleteButton(buttonX - 140, buttonY + 190, 50, 50);
     
+    drawRowCounter();
     highlightEmptyCells();
 
     if (checkAnswer(grid, solvedGrid)) {
@@ -402,7 +457,7 @@ function draw() {
     if (highlightWrongColumn !== null) {
         highlightColumn(gridX + highlightWrongColumn * cellSize, gridY, cellSize);
     }
-
+    
     // let r = 0;
     // while (r < 9) {
     //     displayEmptyCellsInRow(grid, r, gridX + 500, gridY + r * cellSize + 25);
